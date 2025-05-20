@@ -1,12 +1,40 @@
 use std::io::{self, BufRead, BufReader, Stdout, Write, Stdin};
 use std::process::Command;
+use std::env;
 use colored::*;
+
+
+// Expand environment variables in the command line
+// This function checks if a token starts with '$' and replaces it with the corresponding environment variable value.
+// If the variable is not found, it returns an empty string.
+fn expand_variables(token: &str) -> String {
+
+    // Check if the token starts with '$'
+    if token.starts_with('$') {
+
+        // If it does, we remove the '$' and get the variable name
+        let var = &token[1..];
+
+        // Check if the variable name is empty
+        if var.is_empty() {
+            return token.to_string(); // Return the original token if the variable name is empty
+        }
+
+        // Get the value of the environment variable
+        env::var(var).unwrap_or_else(|_| String::new())
+
+    } else {
+
+        // If the token does not start with '$', we return it as is
+        token.to_string()
+    }
+}
 
 /// Splits a command line into tokens, handling simple whitespace separation.
 fn parse_command(line: &str) -> Vec<String> {
     line
         .split_whitespace() // Split by whitespace
-        .map(|s| s.to_string()) // Convert to String
+        .map(expand_variables) // Convert to String
         .collect() // Collect into a Vec<String>
 }
 
@@ -58,6 +86,12 @@ fn main() {
                 // Trim the line to remove leading and trailing whitespace
                 let input = line.trim();
 
+                // Check if the input is empty
+                // If it is empty, we skip to the next iteration of the loop.
+                if input.is_empty() {
+                    continue; // Skip empty input
+                }
+
                 // Split the input into command and arguments
                 // The parse_command function handles simple whitespace separation.
                 let parts = parse_command(input);
@@ -68,9 +102,6 @@ fn main() {
 
                 match command.as_str() {
 
-                    // Check if the input is empty
-                    // If it is empty, we skip to the next iteration of the loop.
-                    "" => continue, // Skip empty input
 
                     // If the input is "exit", we break out of the loop to terminate the program.
                     "exit" => break,
@@ -94,6 +125,18 @@ fn main() {
                         
                         continue;
                     }
+
+                    // env is a special command that prints the environment variables.
+                    // The env::vars() function returns an iterator over the environment variables.
+                    // We use the colored crate to print the variables in a nice format.
+                    "env" => {
+
+                        for (key, value) in env::vars() {
+                            println!("{} = {}", key.green(), value);
+                        }
+                        continue;
+                    }
+
 
                     // If the input is not empty and not a special command, we proceed to execute it.
                     // We split the input into command and arguments using the parse_command function.
