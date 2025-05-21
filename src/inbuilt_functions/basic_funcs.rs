@@ -1,4 +1,5 @@
 use std::env;
+use colored::*;
 
 pub fn pwd() -> String {
     // Get the current working directory
@@ -10,14 +11,14 @@ pub fn pwd() -> String {
 // If the imput is "cd", we change the current directory.
 // The std::env::set_current_dir function is used to change the current working directory.
 // We use the first argument as the new directory.
-pub fn cd(args: &[String], directory: String) {
+pub fn cd(args: &[String], directory: &mut String) {
     let new_dir = args.get(0).map(|s| s.as_str()).unwrap_or("/");
     if let Err(e) = std::env::set_current_dir(new_dir) {
         eprintln!("cd error: {}", e);
     }
-    directory = pwd(); // Update the current directory
 
-    return directory;
+    *directory = pwd(); // Update the current directory
+
 }
 
 // env is a special command that prints the environment variables.

@@ -26,8 +26,6 @@ fn main() {
     let reader = BufReader::new(stdin);
     let mut lines = reader.lines();
 
-    let mut prompt:&str = "lordraleigh>"; // Define the prompt string
-
     let mut directory:String = pwd(); // Get the current working directory
 
     loop{
@@ -67,14 +65,13 @@ fn main() {
                 
 
                 match command.as_str() {
-
-
+                    
                     
                     "exit" => break, // If the input is "exit", we break out of the loop to terminate the program.
 
-                    "pwd" => {println!("{}", directory);continue;} // Print the current working directory
+                    "pwd" => {println!("{}", directory); continue;} // Print the current working directory
 
-                    "cd" => {directory = cd(args, &mut directory); continue;}
+                    "cd" => {cd(args, &mut directory); continue;}
 
                     "env" => {env(); continue;}
 
