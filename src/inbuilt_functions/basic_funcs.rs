@@ -1,3 +1,5 @@
+use std::env;
+
 pub fn pwd() -> String {
     // Get the current working directory
     std::env::current_dir()
@@ -8,7 +10,7 @@ pub fn pwd() -> String {
 // If the imput is "cd", we change the current directory.
 // The std::env::set_current_dir function is used to change the current working directory.
 // We use the first argument as the new directory.
-pub fn cd(args: &[String], directory: &mut String) {
+pub fn cd(args: &[String], directory: String) {
     let new_dir = args.get(0).map(|s| s.as_str()).unwrap_or("/");
     if let Err(e) = std::env::set_current_dir(new_dir) {
         eprintln!("cd error: {}", e);
@@ -26,5 +28,5 @@ pub fn env() {
     for (key, value) in env::vars() {
         println!("{} = {}", key.green(), value);
     }
-    
+
 }

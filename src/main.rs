@@ -1,11 +1,10 @@
 mod parser_functions;
 mod inbuilt_functions{
-    pub mod pwd;
+    pub mod basic_funcs;
 }
 
 use std::io::{self, BufRead, BufReader, Stdout, Write, Stdin};
 use std::process::Command;
-use std::env;
 use parser_functions::parse_command;
 use colored::*;
 use inbuilt_functions::basic_funcs::*;
